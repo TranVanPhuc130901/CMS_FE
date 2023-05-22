@@ -1,3 +1,0 @@
-interface NavbarProps {
-    name: string
-}
