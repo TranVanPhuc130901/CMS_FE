@@ -5,8 +5,10 @@ import '@/styles/globals.css'
 import type { AppProps } from 'next/app';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Provider } from 'react-redux';
 
 import { useRouter } from 'next/router'
+import store from '@/sagas/configureStoreSaga';
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -21,7 +23,8 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   return (
-    <div>
+    <Provider store={store}>
+      <div>
       <div className='w-full bg-[#242322] shadow-hd'>
         <Header />
       </div>
@@ -33,6 +36,7 @@ export default function App({ Component, pageProps }: AppProps) {
       </div>
       <ToastContainer/>
     </div>
+    </Provider>
   );
 }
   

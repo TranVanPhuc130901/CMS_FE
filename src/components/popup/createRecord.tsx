@@ -13,14 +13,14 @@ interface createProps {
   fileds: Array<any>,
   dataTitle: string,
   dataCombobox: Array<any>,
-  loadingCreate: boolean,
-  setLoadingCreate: Dispatch<SetStateAction<boolean>>
+  columnCombobox: Array<any>,
+  valueAddRecord: object
 }
 
 
 const Editor = dynamic(() => import("../lib/MyEditor"), { ssr: false });
 
-const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataCombobox, loadingCreate, setLoadingCreate}) => {
+const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataCombobox,columnCombobox, valueAddRecord}) => {
 
   const [editorLoaded, setEditorLoaded] = useState(false);
 
@@ -28,31 +28,19 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
 
   const [isActive, setIsActive] = useState(false);
 
+console.log(columnCombobox);
+
+
   const buttonAnimation = useSpring({
     transform: isActive ? 'scala(1.2' : 'scale(1)',
     backgroundColor: isActive ? '#913a47' : '#ffffff',
     color: isActive ? '#ffffff' : '#913a47'
   })
-
-  
-
   useEffect(()=> {
     setEditorLoaded(true);
   },[])
 
-  const [formData, setFormData] = useState<Product>({
-    productCode: '',
-    productName: '',
-    productDescription: '',
-    productStatus: 0,
-    productImageSlug: '',
-    productCost: 0,
-    productPromotional: 0,
-    productContentName: '',
-    productMetaDataTitle: '',
-    productMetadataDescrition: '',
-    categoryId: '',
-  });
+  const [formData, setFormData] = useState<Product>(valueAddRecord as Product);
     
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
@@ -114,7 +102,6 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
     } = formData;
   
     const apiUrl = 'https://localhost:7093/api/Product';
-    setLoadingCreate(true)
     fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -172,7 +159,6 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
         toast.error('Thêm dữ liệu thất bại')
         console.error('Lỗi khi thêm dữ liệu:', error.message);
       }).finally(() => {
-        setLoadingCreate(false);
         console.log(formData);
       });
   };
@@ -217,7 +203,7 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
                               ): filed.combobox ? (
                                 <div className='flex w-[calc(50%-6px)] gap-x-3 mb-3 gap-y-1 flex-col'>
                                   <label className='text-[#8f8f8f] text-[16px]' htmlFor="">{filed.title}</label>
-                                  <Combobox dataCombobox={dataCombobox} name={filed.name} onValueChange={handleComboboxChange} defaultValue=''/>
+                                  <Combobox dataCombobox={dataCombobox} columnCombobox={columnCombobox} name={filed.name} onValueChange={handleComboboxChange} defaultValue=''/>
                                 </div>) : filed.image ? (
                                 <div className='flex w-[calc(50%-6px)] gap-x-3 mb-3 gap-y-1 flex-col'>
                                   <label className='text-[16px] text-[#8f8f8f]' htmlFor={filed.name}>
@@ -239,7 +225,7 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
                                 <animated.button
                                   className="button"
                                   style={buttonAnimation}
-                                  onClick={ (event) => handleButtonClick(event,filed.name)}
+                                  onClick={(event: any) => handleButtonClick(event,filed.name)}
                                   value={isActive ? '1' : '0'}
                                   name={filed.name}
                                   >
@@ -278,7 +264,7 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
                               ): filed.combobox ? (
                                 <div className='flex w-[calc(50%-6px)] gap-x-3 mb-3 gap-y-1 flex-col'>
                                   <label className='text-[#8f8f8f] text-[16px]' htmlFor="">{filed.title}</label>
-                                  <Combobox dataCombobox={dataCombobox} name={filed.name} onValueChange={handleComboboxChange} defaultValue=''/>
+                                  <Combobox dataCombobox={dataCombobox} columnCombobox={columnCombobox} name={filed.name} onValueChange={handleComboboxChange} />
                                 </div>) : filed.image ? (
                                 <div className='flex w-[calc(50%-6px)] gap-x-3 mb-3 gap-y-1 flex-col'>
                                   <label className='text-[16px] text-[#8f8f8f]' htmlFor={filed.name}>
@@ -300,7 +286,7 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
                                 <animated.button
                                   className="button"
                                   style={buttonAnimation}
-                                  onClick={ (event) => handleButtonClick(event,filed.name)}
+                                  onClick={ (event: any) => handleButtonClick(event,filed.name)}
                                   value={isActive ? '1' : '0'}
                                   name={filed.name}
                                   >

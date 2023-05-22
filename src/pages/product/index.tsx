@@ -1,7 +1,12 @@
 import React, {useState, useEffect} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import HeaderTable from '../../components/table/HeaderTable';
 import TableList from '../../components/table/TableList';
 import Loading from '@/components/base/Loading';
+import Table from '@/components/table/Table';
+import { getProduct } from '@/sagas/getRecord/getSlice';
+import ProductColumns from '@/components/columns/ProductColumns';
 
 
 interface ProductListProps{
@@ -15,32 +20,40 @@ const ProductList: React.FC<ProductListProps> = ({data, filed, dataType}) => {
   const [productData, setProductData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const filedList = ["focus","Tên sản phẩm", "Mã sản phẩm", "Danh mục sản phẩm", "Trạng thái", "Ảnh sản phẩm", "Content Sản phẩm", "Giá sản phẩm", "Giá khuyến mãi", "Chức năng"];
-  const valueList = ["productName", "productCode", "categoryName", "productStatus", "productImageSlug", "productContentName", "productCost", "productPromotional"]
+
+  const dispath = useDispatch();
+
+  // const filedList = ["focus","Tên sản phẩm", "Mã sản phẩm", "Danh mục sản phẩm", "Trạng thái", "Ảnh sản phẩm", "Content Sản phẩm", "Giá sản phẩm", "Giá khuyến mãi", "Chức năng"];
+  // const valueList = ["productName", "productCode", "categoryName", "productStatus", "productImageSlug", "productContentName", "productCost", "productPromotional"]
 
   useEffect(() => {
+    setLoading(true);
+  
     const fetchData = async () => {
       try {
-        const response = await fetch('https://localhost:7093/api/Product');
-        const data = await response.json();
-        setProductData(data);
-        setLoading(false)
-        console.log(data);
+        await dispath(getProduct());
+        setLoading(false);
       } catch (error) {
-        console.log(error);
-        setLoading(false)
+        console.error('Error while fetching data:', error);
+        setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [dispath]);
+  
+
+ const products = useSelector((state: any) => state.getRecord.products);
+
+console.log('file', ProductColumns);
+
 
   return (
     <div className='w-full pt-3 bg-[#1b1919] px-10 overflow-auto'>
       <div className=''>
         <HeaderTable name='product'/>
       </div>
-      <div className='bg-[#1b1919] w-[full] h-[calc(100vh-200px)]'>
-        <TableList data={productData} filed={filedList} dataType="product" valu={valueList} />
+      <div className='bg-[#1b1919] overflow-auto h-[calc(100vh-200px)]'>
+        <Table data={products} filed={ProductColumns}/>
       </div>
       {loading && <Loading/>}
     </div>

@@ -16,23 +16,6 @@ interface createProps {
 }
 
 interface FormDatas {
-  // title: string,
-  // content: string,
-  // image: string,
-  // author: string,
-  // description :string,
-  // productID: number,
-  // productCode: string,
-  // productName: string,
-  // productDescription: string,
-  // productStatus: number,
-  // productImageSlug: string,
-  // productCost: number,
-  // productPromotional: number,
-  // productContentName: string,
-  // productMetaDataTitle: string,
-  // productMetadataDescrition: string,
-  // categoryId: any,
   [key: string]: any
 }
 
