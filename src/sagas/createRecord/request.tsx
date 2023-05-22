@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-export async function requestAddProduct(formData:any, selectedImage: any) {
+export async function requestAddProduct(formData:any) {
     const {
       productCode,
       productName,
@@ -38,26 +38,7 @@ export async function requestAddProduct(formData:any, selectedImage: any) {
   
     if (response.ok) {
       const data = await response.json();
-      if (selectedImage) {
-        const uploadFormData = new FormData();
-        uploadFormData.append('image', selectedImage);
-  
-        const uploadResponse = await fetch('/api/upload-image', {
-          method: 'POST',
-          body: uploadFormData,
-        });
-  
-        if (uploadResponse.ok) {
-          console.log('Lưu ảnh thành công');
-          // Tiếp tục thực hiện các bước khác sau khi lưu ảnh thành công
-        } else {
-          throw new Error('Lỗi khi lưu ảnh');
-        }
-      }
-  
-      // Xử lý phản hồi thành công
-      toast.success('Thêm dữ liệu thành công');
-      console.log('Thêm dữ liệu thành công:', data);
+      return data;
     } else {
       // Xử lý phản hồi lỗi
       throw new Error('Lỗi khi thêm dữ liệu');

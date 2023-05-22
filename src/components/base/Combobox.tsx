@@ -29,8 +29,6 @@ const Combobox: React.FC<dataCombobox> = ({dataCombobox, name, onValueChange, de
 
   const defaultCategory = dataCombobox.find((data) => data.categoryID === defaultValue);
   const defaultCategoryName = defaultCategory ? defaultCategory.categoryName : '';
-console.log(columnCombobox);
-
 
   return (
     <div className="relative">

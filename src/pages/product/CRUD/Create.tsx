@@ -40,8 +40,6 @@ const Create = () => {
         dispatch(getCategory());
     },[dispatch]);
 
-   console.log(CategoryProductColumn);
-
     const category = useSelector((state: any) => state.getRecord.categories);
   return (
     <div>

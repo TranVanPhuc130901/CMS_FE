@@ -8,7 +8,7 @@ export function* handleAddProduct(action: any):Generator<any>{
     try {
         const {formData, selectedImage} = action.payload;
 
-        yield call(requestAddProduct, formData, selectedImage);
+        yield call(requestAddProduct, formData);
 
         yield put(addArticleSuccess());
     } catch (error: any) {

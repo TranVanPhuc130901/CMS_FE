@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState , useMemo, useCallback, Dispatch, SetStateAction} from 'react';
 import dynamic from "next/dynamic";
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct } from '@/sagas/createRecord/createRecordSlice';
 
 import Combobox from '../base/Combobox';
 import { toast } from 'react-toastify';
@@ -27,9 +29,12 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const [isActive, setIsActive] = useState(false);
+ 
+  const dispatch = useDispatch();
 
-console.log(columnCombobox);
+  const isAdding = useSelector((state:any) => state.addRecord.isAdding);
 
+  const error = useSelector((state: any) => state.addRecord.error)
 
   const buttonAnimation = useSpring({
     transform: isActive ? 'scala(1.2' : 'scale(1)',
@@ -85,82 +90,35 @@ console.log(columnCombobox);
     []
   );
 
-  const handleAddRecord = (e: React.FormEvent) => {
+  const handleAddRecord = async (e: React.FormEvent) => {
     e.preventDefault();
-    const {
-      productCode,
-      productName,
-      productDescription,
-      productStatus,
-      productImageSlug,
-      productCost,
-      productPromotional,
-      productContentName,
-      productMetaDataTitle,
-      productMetadataDescrition,
-      categoryId
-    } = formData;
+    
+    try {
+      dispatch(addProduct({ formData }));
   
-    const apiUrl = 'https://localhost:7093/api/Product';
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        productCode,
-        productName,
-        productDescription,
-        productStatus,
-        productImageSlug,
-        productCost,
-        productPromotional,
-        productContentName,
-        productMetaDataTitle,
-        productMetadataDescrition,
-        categoryId
-      }),
-      
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
+      if (selectedImage) {
+        const uploadFormData = new FormData();
+        uploadFormData.append('image', selectedImage);
+  
+        const uploadResponse = await fetch('/api/upload-image', {
+          method: 'POST',
+          body: uploadFormData,
+        });
+  
+        if (uploadResponse.ok) {
+          console.log('Lưu ảnh thành công');
+          // Tiếp tục thực hiện các bước khác sau khi lưu ảnh thành công
         } else {
-          throw new Error('Lỗi khi thêm dữ liệu');
+          throw new Error('Lỗi khi lưu ảnh');
         }
-      })
-      .then(data => {
-        if (selectedImage) {
-          const uploadFormData = new FormData();
-          uploadFormData.append('image', selectedImage);
-      
-          fetch('/api/upload-image', {
-            method: 'POST',
-            body: uploadFormData,
-          })
-            .then((uploadResponse) => {
-              if (uploadResponse.ok) {
-                console.log('Lưu ảnh thành công');
-                // Tiếp tục thực hiện các bước khác sau khi lưu ảnh thành công
-              } else {
-                throw new Error('Lỗi khi lưu ảnh');
-              }
-            })
-            .catch((uploadError) => {
-              console.error('Lỗi khi lưu ảnh:', uploadError);
-            });
-        }
-        // Xử lý phản hồi thành công
-        toast.success('Thêm dữ liệu thành công')
-        console.log('Thêm dữ liệu thành công:', data);
-      })
-      .catch(error => {
-        // Xử lý phản hồi lỗi
-        toast.error('Thêm dữ liệu thất bại')
-        console.error('Lỗi khi thêm dữ liệu:', error.message);
-      }).finally(() => {
-        console.log(formData);
-      });
+      }
+  
+      // Xử lý phản hồi thành công
+      toast.success('Thêm dữ liệu thành công');
+    } catch (error) {
+      toast.error('Thêm dữ liệu thất bại');
+      console.error('Lỗi khi thêm dữ liệu:', error);
+    }
   };
 
   const handleComboboxChange = useCallback((value: string, name: string) => {
@@ -189,68 +147,6 @@ console.log(columnCombobox);
                  <div className='flex flex-col gap-y-3'>
                  <div className='flex gap-x-3 w-full flex-wrap'>
                  {fileds.map((filed: any) => {
-                        switch (dataTypes) {
-                          case 'article':
-                            return (
-                              <React.Fragment key={filed.id}>
-                              {filed.textEditor ? (
-                                <div className='flex gap-y-1 flex-col w-full'>
-                                  <label className='text-[#8f8f8f] text-[16px]' htmlFor={filed.name}>
-                                    {filed.title}
-                                  </label>
-                                  {editorLoaded && <Editor name={filed.name} onEditorChange={handleEditorChange}/>}
-                                </div>
-                              ): filed.combobox ? (
-                                <div className='flex w-[calc(50%-6px)] gap-x-3 mb-3 gap-y-1 flex-col'>
-                                  <label className='text-[#8f8f8f] text-[16px]' htmlFor="">{filed.title}</label>
-                                  <Combobox dataCombobox={dataCombobox} columnCombobox={columnCombobox} name={filed.name} onValueChange={handleComboboxChange} defaultValue=''/>
-                                </div>) : filed.image ? (
-                                <div className='flex w-[calc(50%-6px)] gap-x-3 mb-3 gap-y-1 flex-col'>
-                                  <label className='text-[16px] text-[#8f8f8f]' htmlFor={filed.name}>
-                                    {filed.title}
-                                  </label>
-                                  <input
-                                    className='rounded-lg border-[1px] border-[#424242] text-[#8f8f8f] outline-none w-full px-3 py-2 bg-[#232223]'
-                                    placeholder={filed.title}
-                                    type='file'
-                                    name={filed.name}
-                                    onChange={handleInputChange}
-                                  />
-                                </div>
-                              ) : filed.animation ? (
-                                <div className='flex flex-col gap-y-1'>
-                                <label className='text-[16px] text-[#8f8f8f]' htmlFor={filed.name}>
-                                    {filed.title}
-                                  </label>
-                                <animated.button
-                                  className="button"
-                                  style={buttonAnimation}
-                                  onClick={(event: any) => handleButtonClick(event,filed.name)}
-                                  value={isActive ? '1' : '0'}
-                                  name={filed.name}
-                                  >
-                                {isActive ? 'Active' : 'Unactive'}
-                              </animated.button></div>
-                              )
-                              : (
-                                <div className='flex w-[calc(50%-6px)] gap-x-3 mb-3 gap-y-1 flex-col' key={filed.id}>
-                                  <label className='text-[16px] text-[#8f8f8f]' htmlFor={filed.name}>
-                                    {filed.title}
-                                  </label>
-                                  <input
-                                    className='rounded-lg border-[1px] border-[#424242] text-[#8f8f8f] outline-none w-full px-3 py-2 bg-[#232223]'
-                                    placeholder={filed.title}
-                                    type={filed.type}
-                                    name={filed.name}
-                                    value={formData[filed.name as keyof Product]}
-                                    onChange={handleInputChange}
-                                  />
-                                </div>
-                              )
-                              }
-                            </React.Fragment>
-                            );
-                          case 'product':
                             // Các trường hợp khác cho 'product'
                             return (
                               <React.Fragment key={filed.id}>
@@ -309,15 +205,8 @@ console.log(columnCombobox);
                                 </div>
                               )
                               }
-                            </React.Fragment>
-                                
+                            </React.Fragment> 
                             );
-                          case 'user':
-                            // Các trường hợp khác cho 'user'
-                            return null;
-                          default:
-                            return null;
-                        }
                     })}
                   </div>
                  </div>
