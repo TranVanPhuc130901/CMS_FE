@@ -41,11 +41,7 @@ const ProductList: React.FC<ProductListProps> = ({data, filed, dataType}) => {
     fetchData();
   }, [dispath]);
   
-
  const products = useSelector((state: any) => state.getRecord.products);
-
-console.log('file', ProductColumns);
-
 
   return (
     <div className='w-full pt-3 bg-[#1b1919] px-10 overflow-auto'>
