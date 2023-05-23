@@ -1,18 +1,41 @@
 import Image from 'next/image';
-import React from 'react'
+import React, { useState } from 'react';
+import Link from 'next/link';
+import close from '../../../public/icon/close.svg'
 
 interface tableProps {
     data: Array<any>;
-    filed: Array<any>
+    filed: Array<any>;
+    name: string,
+    imageDelete: any,
+    itemDelete: any
 }
 
-const Table: React.FC<tableProps> = ({data, filed}) => {
-    
+const Table: React.FC<tableProps> = ({data, filed, name,imageDelete, itemDelete }) => {
+    const [showNotification, setShowNotification] = useState(false);
+    const [idRecordDelete, setidRecordDelete] = useState('');
+
+    const handleDelete = async (productId: any) => {
+        setidRecordDelete(productId);
+        setShowNotification(true);
+        console.log(productId);
+      }
+
+      const cancelDelete = () => {
+        setShowNotification(false)
+      }
+
+      const submitDelete = async () => {
+        // imageDelete(idRecordDelete);
+        itemDelete(idRecordDelete);
+        setShowNotification(false)
+      }
+
   return (
-   <table className='overflow-scroll w-[100%]'>
+     <React.Fragment>
+        <table className='overflow-scroll w-[100%]'>
     <thead>
         <tr className='text-white flex justify-between'>
-
             {filed.map((col) => (
                 <th className='w-[250px]' key={col.id}>{col.name}</th>
             ))}
@@ -41,15 +64,39 @@ const Table: React.FC<tableProps> = ({data, filed}) => {
                         </td>
                     )
                     ))}
-
-            <td className='w-[250px] flex items-center justify-center'>
-                <button>Xóa</button>
-                <button>Sửa</button>
-            </td>
+            {filed.map((i: any,index) => (
+                i.note && (
+            <td className='w-[250px] flex items-center justify-center' key={index}>
+                <Link href={`/${name}/CRUD/Delete/${item[i.label]}`} onClick={(e) => {e.preventDefault() ; handleDelete(item[i.label])
+              }} >Xóa</Link>
+                <Link href={`/${name}/CRUD/Update/${item[i.label]}`}>Sửa</Link>
+            </td>)
+            ))}
           </tr>
         ))}
     </tbody>
    </table>
+   {showNotification && (
+        <React.Fragment>
+         <div className='fixed top-0 left-0 right-0 bottom-0 bg-[rgba(0,0,0,0.3)]'>
+           <div className='fixed top-0 left-0 right-0 bottom-0 bg-[rgba(0,0,0,0.3)]'>
+             <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-[400px] p-6 flex flex-col gap-y-6'>
+             <div className='flex justify-between items-center'>
+                 <div className='text-black text-[20px] font-bold'>Bạn có muốn xóa</div>
+                 <div className='cursor-pointer' onClick={cancelDelete}><Image src={close} alt='close'/></div>
+             </div>
+             <div>Dữ liệu bạn vừa chọn sẽ bị xóa</div>
+             <div className='flex flex-row-reverse gap-x-2'>
+                 <button className='w-[80px] py-[9px] bg-[#DE3617] text-white rounded-[3px]' onClick={submitDelete}>Xóa</button>
+                 <button className='w-[80px] py-[9px] border-[1px] border-[#E0E0E0] rounded-[3px]' onClick={cancelDelete}>Hủy bỏ</button>
+             </div>
+             </div>
+           </div> 
+        </div>
+        </React.Fragment>
+         )}
+     </React.Fragment>
+   
   )
 }
 

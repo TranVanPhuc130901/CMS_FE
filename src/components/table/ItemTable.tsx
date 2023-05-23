@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react'
 import Link from 'next/link'
 import Image from 'next/image';
 import TheadTable from './TheadTable'
-import Notification from '../popup/Notification';
 
 
 import close from '../../../public/icon/close.svg'

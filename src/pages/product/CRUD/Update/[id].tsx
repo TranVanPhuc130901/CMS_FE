@@ -2,118 +2,98 @@ import CreateRecord from '@/components/popup/createRecord'
 import React, {useState, useEffect} from 'react'
 import { useRouter } from 'next/router'
 import UpdateRecord from '@/components/popup/UpdateRecord'
+import { ProductForm } from '@/components/form/Product'
+import { useSelector } from 'react-redux'
+import { requestGetProductId, requestUpdateProduct } from '@/sagas/createRecord/request'
+import { toast } from 'react-toastify'
+import { CategoryProductColumn } from '@/components/columns/CategoryProduct'
 
-interface  createPropsProduct{
-    dataTypes: string,
-    fileds: Array<any>,
-    dataTitle: string,
-    dataCombobox: Array<any>,
-    dataRecordId: object
-}
 
-const Update = () => {
-    const [dataCombo, setDataCombo] = useState([]);
-    const [dataProductId, setDataProductId] = useState([])
+interface FormDatas {
+   [key: string]: any
+ }
  
-        const router = useRouter();
-        const id = router.query;
-        
-        useEffect(() => {
-            const  fetchData = async () => {
-               try {
-                const reponse = await fetch('https://localhost:7093/api/Category');
-                const data = await reponse.json();
-                setDataCombo(data)
-                console.log(data);
-               } catch (error) {
-                console.log(error);
-                
+const Update = () => {
+   const [productData, setProductData] = useState<FormDatas>({
+      productID: 0,
+      productCode: '',
+      productName: '',
+      productDescription: '',
+      productStatus: 0,
+      productImageSlug: '',
+      productCost: 0,
+      productPromotional: 0,
+      productContentName: '',
+      productMetaDataTitle: '',
+      productMetadataDescrition: '',
+      categoryId: '',
+    });
+ 
+      const router = useRouter();
+      const id = router.query;
+      const parseId = id.id
+       const updateProduct = async (formData: any, selectedImage: any) => {
+         try {
+            const data = await requestUpdateProduct(formData, parseId);
+            if (selectedImage) {
+               const uploadFormData = new FormData();
+               uploadFormData.append('image', selectedImage);
+         
+               const uploadResponse = await fetch('/api/upload-image', {
+                 method: 'POST',
+                 body: uploadFormData,
+               });
+         
+               if (uploadResponse.ok) {
+                 console.log('Lưu ảnh thành công');
+                 // Tiếp tục thực hiện các bước khác sau khi lưu ảnh thành công
+               } else {
+                 throw new Error('Lỗi khi lưu ảnh');
                }
-            }
-            fetchData();
-        },[])
-
-    useEffect(() => {
-        const  fetchData1 = async () => {
-           try {
-            const parseId = id.id
-            const response = await fetch(`https://localhost:7093/api/Product/${parseId}`);
-            const data = await response.json();
-            setDataProductId(data)
-            console.log(data);
+             }
+         
+             // Xử lý phản hồi thành công
+             toast.success('Thêm dữ liệu thành công');
            } catch (error) {
-            console.log(error);
+             toast.error('Thêm dữ liệu thất bại');
+             console.error('Lỗi khi thêm dữ liệu:', error);
            }
-        }
-        fetchData1();
-    },[id])
+       }  
 
-    const filedproduct = [
-      {
-          id: 1,
-         title: "Mã sản phẩm",
-         type: 'text',
-         name: 'productCode'
-      },
-      {
-          id: 2,
-          title: "Tên sản phẩm",
-          type: 'text',
-          name: 'productName'
-       },
-     
-       {
-          id: 3,
-          title: "Ảnh đại diện sản phẩm",
-          image: true,
-          name: 'productImageSlug'
-       },
-       {
-          id: 4,
-          title: "Tiêu đề sản phẩm(SEO)",
-          type: 'text',
-          name: 'productMetaDataTitle'
-       },
-       {
-          id: 5,
-          title: "Mô tả sản phẩm(SEO)",
-          type: 'text',
-          name: 'productMetadataDescrition'
-       },
-       {
-          id: 6,
-          title: "Giá sản phẩm",
-          type: 'text',
-          name: 'productCost'
-       },
-       {
-          id: 7,
-          title: "Giá khuyến mãi sản phẩm",
-          type: 'text',
-          name: 'productPromotional'
-       },
-       {
-          id: 8,
-          title: "Danh mục sản phẩm",
-          combobox: true,
-          name: 'categoryId'
-       },
-       {
-          id: 9,
-          title: 'Contenr sản phẩm',
-          name: 'productContentName'
-       },
-       {
-          id: 10,
-          title: "Chi tiết sản phẩm",
-          type: 'text',
-          textEditor: true,
-          name: 'productDescription'
-       },
-      ]
+       const dataProduct = (data:any ) : FormDatas => ({
+         productID: data.productID || 0,
+         productCode: data.productCode || '',
+         productName: data.productName || '',
+         productDescription: data.productDescription || '',
+         productStatus: data.productStatus || 0,
+         productImageSlug: data.productImageSlug || '',
+         productCost: data.productCost || 0,
+         productPromotional: data.productPromotional || 0,
+         productContentName: data.productContentName || '',
+         productMetaDataTitle: data.productMetaDataTitle || '',
+         productMetadataDescrition: data.productMetadataDescrition || '',
+         categoryId: data.categoryId || '',
+      })
+
+       useEffect(() => {
+         const fetchData = async () => {
+           try {
+             const data = await requestGetProductId(parseId);
+             const formattedData = dataProduct(data);
+             setProductData(formattedData);
+           } catch (error) {
+             console.log(error);
+           }
+         };
+         fetchData();
+       }, [parseId]);
+              
+
+    const category = useSelector((state: any) => state.getRecord.categories);
+
   return (
     <div>
-        <UpdateRecord dataTypes='product' fileds={filedproduct} dataTitle='Sản Phẩm' dataCombobox={dataCombo} dataRecordId={dataProductId}/>
+        <UpdateRecord dataTypes='product' fileds={ProductForm} dataTitle='Sản Phẩm' dataCombobox={category}  columnCombobox={CategoryProductColumn} dataRecordId={productData} api={updateProduct} />
     </div>
   )
 }

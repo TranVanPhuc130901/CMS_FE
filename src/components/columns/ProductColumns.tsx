@@ -9,5 +9,6 @@ const ProductColumns = [
     { id: 8 ,label: 'productCost', name: 'Giá sản phẩm', display: true},
     { id: 9 ,label: 'productPromotional', name: 'Giá khuyến mãi', display: true},
     { id: 10 ,label: '', name: 'Chức năng', display: false},
+    {id: 11, label: 'productID', name:'', display: false, note: true}
 ]
 export default ProductColumns;

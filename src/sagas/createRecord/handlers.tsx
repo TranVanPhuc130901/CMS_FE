@@ -6,7 +6,7 @@ import { requestAddProduct } from './request';
 
 export function* handleAddProduct(action: any):Generator<any>{
     try {
-        const {formData, selectedImage} = action.payload;
+        const {formData} = action.payload;
 
         yield call(requestAddProduct, formData);
 

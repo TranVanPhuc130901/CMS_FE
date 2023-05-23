@@ -68,3 +68,18 @@ export const ProductForm = [
         name: 'productDescription'
      },
     ]
+
+    export interface productFiled {
+      productID: 0,
+      productCode: '',
+      productName: '',
+      productDescription: '',
+      productStatus: 0,
+      productImageSlug: '',
+      productCost: 0,
+      productPromotional: 0,
+      productContentName: '',
+      productMetaDataTitle: '',
+      productMetadataDescrition: '',
+      categoryId: '',
+    }

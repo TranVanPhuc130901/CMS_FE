@@ -16,13 +16,14 @@ interface createProps {
   dataTitle: string,
   dataCombobox: Array<any>,
   columnCombobox: Array<any>,
-  valueAddRecord: object
+  valueAddRecord: object,
+  api: any
 }
 
 
 const Editor = dynamic(() => import("../lib/MyEditor"), { ssr: false });
 
-const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataCombobox,columnCombobox, valueAddRecord}) => {
+const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataCombobox,columnCombobox, valueAddRecord, api}) => {
 
   const [editorLoaded, setEditorLoaded] = useState(false);
 
@@ -92,32 +93,11 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
 
   const handleAddRecord = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-      dispatch(addProduct({ formData }));
-  
-      if (selectedImage) {
-        const uploadFormData = new FormData();
-        uploadFormData.append('image', selectedImage);
-  
-        const uploadResponse = await fetch('/api/upload-image', {
-          method: 'POST',
-          body: uploadFormData,
-        });
-  
-        if (uploadResponse.ok) {
-          console.log('Lưu ảnh thành công');
-          // Tiếp tục thực hiện các bước khác sau khi lưu ảnh thành công
-        } else {
-          throw new Error('Lỗi khi lưu ảnh');
-        }
-      }
-  
-      // Xử lý phản hồi thành công
-      toast.success('Thêm dữ liệu thành công');
+      await api(formData, selectedImage);
+      console.log('thêm dữ liệu thành công');
     } catch (error) {
-      toast.error('Thêm dữ liệu thất bại');
-      console.error('Lỗi khi thêm dữ liệu:', error);
+      console.error('Lỗi khi thêm dữ liệu:');
     }
   };
 
