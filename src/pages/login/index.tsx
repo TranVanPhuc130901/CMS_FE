@@ -7,8 +7,8 @@ import Bg from '../../public/image/balloon-lg.jpg';
 import magic from '../../public/image/balloon.jpg';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { requestLogin } from '@/sagas/User/request';
-import { setFullName } from '@/redux-thunk/userSlice';
+import { requestLogin, saveToken } from '@/sagas/User/request';
+import { setFullName, setToken } from '@/redux-thunk/userSlice';
 
 
 const Login = () => {
@@ -32,8 +32,12 @@ const handleUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
           if (response) {
             console.log(response.message);
             console.log(response);
+            dispatch(setFullName(response.fullName));
+            sessionStorage.setItem('token', response.token);
+            dispatch(setToken(response.token))
+            await saveToken(response.token);
             // Chuyển hướng đến trang quản trị
-            dispatch(setFullName(response.fullName))
+           
             router.push('/product');
           } else {
             console.log(response.message);
@@ -43,7 +47,7 @@ const handleUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
           console.error('Lỗi', error);
         }
         console.log('name:', userName, 'pass:', password);
-      };
+  };
       
 
   return (

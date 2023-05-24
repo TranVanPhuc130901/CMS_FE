@@ -4,6 +4,7 @@ import { call, put } from 'redux-saga/effects';
 
 import { requestGetProduct, requestGetCategory, requestGetArticle, requestGetUser } from './request';
 import { setGetProduct, setGetCategory, setGetArticle, setGetUser } from './getSlice'; 
+import { useSelector } from 'react-redux';
 
 export function* handleGetRequest(action : any):Generator<any>
 {        

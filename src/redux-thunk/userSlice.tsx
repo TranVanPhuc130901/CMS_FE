@@ -10,6 +10,7 @@ const userSlice = createSlice({
     name: 'user',
     initialState: {
       fullName: '',
+      token: '',
       isLoading: false,
       error: null,
     },
@@ -19,8 +20,13 @@ const userSlice = createSlice({
             fullName: action.payload
         }),
         getFullName(){},
+        setToken: (state, action) => ({
+          ...state,
+          token: action.payload
+      }),
+      getToken(){},
     },
   });
 
-  export const {setFullName, getFullName} = userSlice.actions
+  export const {setFullName, getFullName, setToken, getToken} = userSlice.actions
 export default userSlice.reducer;

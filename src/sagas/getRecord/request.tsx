@@ -1,6 +1,13 @@
+import { useSelector } from "react-redux";
+
 export async function requestGetProduct() {
+  const token = sessionStorage.getItem('token'); 
     const response = await fetch('https://localhost:7093/api/Product', {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`
+      }
     });
     if (response.ok) {
       const data = await response.json();
