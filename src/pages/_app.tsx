@@ -16,9 +16,11 @@ export default function App({ Component, pageProps }: AppProps) {
   // Kiểm tra nếu là trang login, không hiển thị Navbar và Header
   if (router.pathname === '/login') {
     return (
-      <div>
+      <Provider store={store} >
+        <div>
         <Component {...pageProps} />
       </div>
+      </Provider>
     );
   }
 

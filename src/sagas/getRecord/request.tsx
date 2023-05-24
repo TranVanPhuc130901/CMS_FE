@@ -1,5 +1,7 @@
 export async function requestGetProduct() {
-    const response = await fetch('https://localhost:7093/api/Product');
+    const response = await fetch('https://localhost:7093/api/Product', {
+      method: 'GET'
+    });
     if (response.ok) {
       const data = await response.json();
       return data;

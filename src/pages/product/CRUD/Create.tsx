@@ -62,7 +62,6 @@ const Create = () => {
             throw new Error('Lỗi khi lưu ảnh');
           }
         }
-    
         // Xử lý phản hồi thành công
         toast.success('Thêm dữ liệu thành công');
       } catch (error) {

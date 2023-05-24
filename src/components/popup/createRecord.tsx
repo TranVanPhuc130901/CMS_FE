@@ -3,7 +3,6 @@
 import React, { useEffect, useState , useMemo, useCallback, Dispatch, SetStateAction} from 'react';
 import dynamic from "next/dynamic";
 import { useDispatch, useSelector } from 'react-redux';
-import { addProduct } from '@/sagas/createRecord/createRecordSlice';
 
 import Combobox from '../base/Combobox';
 import { toast } from 'react-toastify';
@@ -33,9 +32,6 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
  
   const dispatch = useDispatch();
 
-  const isAdding = useSelector((state:any) => state.addRecord.isAdding);
-
-  const error = useSelector((state: any) => state.addRecord.error)
 
   const buttonAnimation = useSpring({
     transform: isActive ? 'scala(1.2' : 'scale(1)',
@@ -95,7 +91,7 @@ const CreateRecord:React.FC<createProps> = ({dataTypes, fileds, dataTitle, dataC
     e.preventDefault();
     try {
       await api(formData, selectedImage);
-      console.log('thêm dữ liệu thành công');
+      // console.log('thêm dữ liệu thành công');
     } catch (error) {
       console.error('Lỗi khi thêm dữ liệu:');
     }

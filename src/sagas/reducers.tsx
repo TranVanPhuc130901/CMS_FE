@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import getSlice from './getRecord/getSlice';
-import createRecordSlice from './createRecord/createRecordSlice';
+import userSliceReducer from '@/redux-thunk/userSlice';
 
 const reducer = combineReducers({
     getRecord: getSlice,
-    addRecord: createRecordSlice
+    userLogin: userSliceReducer,
 })
 
 export default reducer;

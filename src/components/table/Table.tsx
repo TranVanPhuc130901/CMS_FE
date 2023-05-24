@@ -34,47 +34,48 @@ const Table: React.FC<tableProps> = ({data, filed, name,imageDelete, itemDelete 
   return (
      <React.Fragment>
         <table className='overflow-scroll w-[100%]'>
-    <thead>
-        <tr className='text-white flex justify-between'>
-            {filed.map((col) => (
-                <th className='w-[250px]' key={col.id}>{col.name}</th>
-            ))}
-        </tr>
-    </thead>
-    <tbody>
-    {data.map((item, index) => (
-          <tr className='text-white flex justify-between' key={index}>
-            <td className='text-white w-[250px] flex items-center justify-center' > 
-                <input type="checkbox" />
-            </td> 
-            {filed.map((col: any) => (
-                    col.display && (
-                        <td className='text-white w-[250px] flex justify-center items-center' key={col.id}>
-                        {col.label === 'productImageSlug' ? (
-                            <Image src={`/images/${item[col.label]}`} alt="Product image" width={100} height={100} className='my-0 mx-auto'/>
-                        ) : col.label === 'productStatus' ? (
-                            <div className={item[col.label] === 0 ? 'bg-red-800 rounded-[40px]' : item[col.label] === 1 ? 'bg-blue-600 rounded-[40px]' : 'bg-yellow-500-800 rounded-[40px]'}>
-                            <span>
-                                {item[col.label] === 0 ? 'Chưa kích hoạt' : item[col.field] === 1 ? 'Đã kích hoạt' : 'Chờ xử lý'}
-                            </span>
-                            </div>
-                        ) : (
-                            item[col.label]
-                        )}
-                        </td>
-                    )
+            <thead className=''> 
+                <tr className='text-white flex justify-between mb-2'>
+                    {filed.map((col) => (
+                        !col.thDisplay && (
+                        <th className='w-[250px] lex justify-center items-center' key={col.id}>{col.name}</th>
+                    )))}
+                </tr>
+            </thead>
+            <tbody className='flex flex-col gap-y-3'>
+            {data.map((item, index) => (
+                <tr className='text-white flex justify-between bg-[#222020] shadow-tb h-[100px] rounded-[20px]' key={index}>
+                    <td className='text-white w-[250px] flex items-center justify-center' > 
+                        <input type="checkbox" />
+                    </td> 
+                    {filed.map((col: any) => (
+                            col.display && (
+                                <td className='text-white w-[250px] flex justify-center items-center' key={col.id}>
+                                {col.label === 'productImageSlug' ? (
+                                    <Image src={`/images/${item[col.label]}`} alt="Product image" width={100} height={100} className='mx-auto py-2'/>
+                                ) : col.label === 'productStatus' ? (
+                                    <div className={item[col.label] === 0 ? 'bg-red-800 rounded-[40px]' : item[col.label] === 1 ? 'bg-blue-600 rounded-[40px]' : 'bg-yellow-500-800 rounded-[40px]'}>
+                                    <span className='block px-3 py-1'>
+                                        {item[col.label] === 0 ? 'Chưa kích hoạt' : item[col.label] === 1 ? 'Đã kích hoạt' : 'Chờ xử lý'}
+                                    </span>
+                                    </div>
+                                ) : (
+                                    item[col.label]
+                                )}
+                                </td>
+                            )
+                            ))}
+                    {filed.map((i: any,index) => (
+                        i.note && (
+                    <td className='w-[250px] flex items-center justify-center gap-x-4' key={index}>
+                        <Link href={`/${name}/CRUD/Delete/${item[i.label]}`} onClick={(e) => {e.preventDefault() ; handleDelete(item[i.label])
+                    }} className='text-red-600'>Xóa</Link>
+                        <Link href={`/${name}/CRUD/Update/${item[i.label]}`} className='text-blue-600'>Sửa</Link>
+                    </td>)
                     ))}
-            {filed.map((i: any,index) => (
-                i.note && (
-            <td className='w-[250px] flex items-center justify-center' key={index}>
-                <Link href={`/${name}/CRUD/Delete/${item[i.label]}`} onClick={(e) => {e.preventDefault() ; handleDelete(item[i.label])
-              }} >Xóa</Link>
-                <Link href={`/${name}/CRUD/Update/${item[i.label]}`}>Sửa</Link>
-            </td>)
-            ))}
-          </tr>
-        ))}
-    </tbody>
+                </tr>
+                ))}
+            </tbody>
    </table>
    {showNotification && (
         <React.Fragment>

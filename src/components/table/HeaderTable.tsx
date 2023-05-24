@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-
+import { useSelector } from 'react-redux'
 
 interface PropsHeaderTable {
     name: string
@@ -8,9 +8,10 @@ interface PropsHeaderTable {
 
 
 const HeaderTable = (props: PropsHeaderTable) => {
-    const {name} = props
+    const {name} = props;
+    
   return (
-    <div className='flex justify-between items-start w-full p-3 h-[122px]'>
+    <div className='flex justify-between items-start w-full px-3 h-[100px] pt-3 mb-3 border-b-[1px] border-[#fff]'>
         <div className='flex items-end gap-2 text-[#8f8f8f]'>
             <div className='text-2xl'>{name}</div>
             <div>Data</div>

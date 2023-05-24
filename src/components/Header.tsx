@@ -8,6 +8,7 @@ import Menu from '../../assets/icon/icons8-menu.svg';
 import FullScreen from '../../assets/icon/fullscreen.svg';
 import ActualScreen from '../../assets/icon/actureScreen.svg';
 import avatar from '../../assets/image/avatar.jpg';
+import { useSelector } from 'react-redux';
 
 const path = require('path');
 const imagePath = path.resolve(__dirname, 'my-app', 'assets', 'image');
@@ -15,6 +16,9 @@ const imagePath = path.resolve(__dirname, 'my-app', 'assets', 'image');
 const Header = () => {
   const [screen, setScreen] = useState<boolean>(true);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+
+  const fullName = useSelector((state: any) => state.userLogin.fullName);
+  console.log(fullName);
 
   useEffect(() => {
     if (isFullScreen) {
@@ -74,7 +78,7 @@ const Header = () => {
                )}
             </div>
             <div className='flex gap-x-2 items-center cursor-pointer'>
-              <div className='text-white'>Alex</div>
+              <div className='text-white'>{fullName}</div>
               <Image className='w-10 h10 rounded-full' src={avatar} alt="avatar" width={100} height={100} />
             </div>
         </div>
