@@ -17,7 +17,13 @@ export async function requestGetProduct() {
   }
 
   export async function requestGetCategory() {
-    const response = await fetch('https://localhost:7093/api/Category');
+    const token = sessionStorage.getItem('token'); 
+    const response = await fetch('https://localhost:7093/api/Category', {
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`
+      }
+    });
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -26,7 +32,13 @@ export async function requestGetProduct() {
   }
 
   export async function requestGetArticle() {
-    const response = await fetch('https://localhost:7093/api/Article');
+    const token = sessionStorage.getItem('token'); 
+    const response = await fetch('https://localhost:7093/api/Article', {
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`
+      }
+    });
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -35,7 +47,13 @@ export async function requestGetProduct() {
   }
 
 export async function requestGetUser(){
-    const response = await fetch('https://localhost:7093/api/v1/User');
+  const token = sessionStorage.getItem('token'); 
+    const response = await fetch('https://localhost:7093/api/v1/User', {
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`
+      }
+    });
     if(response.ok){
         const data = await response.json();        
         return data
